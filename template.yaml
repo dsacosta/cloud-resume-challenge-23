@@ -8,30 +8,37 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 5
+    Timeout: 3
     MemorySize: 128
 
 Resources:
-  MyWebsite: 
-    Type: AWS::S3::Bucket
+
+  MyWebsite:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
       BucketName: dsa-website1
 
-BucketPolicy:
-  Type: AWS::S3::BucketPolicy
-    PolicyDocument:
-      Id: MyPolicy
-      Version: 2012-10-17
-      Statement:
-        - Sid: PublicReadForGetBucketObjects
-          Effect: Allow
-          Principal: "*"
-          Action: "s3:GetObject"
-          Resources: !Join
-            - ""
-            - - "arn:aws:s3:::"
-              - !Ref MyWebsite
-              - /*
-    Bucket: !Ref MyWebsite
+  BucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      PolicyDocument:
+        Id: WebPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${CloudFrontOriginAccessIdentity}"
+            Action: "s3:GetObject"
+            Resource: !Join
+              - ""
+              - - "arn:aws:s3:::"
+                - !Ref MyWebsite
+                - /*
+      Bucket: !Ref MyWebsite
 
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
