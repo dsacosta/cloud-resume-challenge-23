@@ -26,10 +26,7 @@ Resources:
         Statement:
         - Sid: PublicReadForGetBucketObjects
           Effect: Allow
-          Principal:
-            AWS:
-              Fn::Sub: arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity
-                ${CloudFrontOriginAccessIdentity}
+          Principal: '*'
           Action: s3:GetObject
           Resource:
             Fn::Join:
