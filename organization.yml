@@ -1,0 +1,72 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+
+Organization:
+  Root:
+    Type: OC::ORG::MasterAccount
+    Properties:
+      AccountName: itsmedsa
+      AccountId: '174413740806'
+      Tags:
+        budget-alarm-threshold: '25'
+        account-owner-email: david@dsacosta.io
+
+  OrganizationRoot:
+    Type: OC::ORG::OrganizationRoot
+    Properties:
+      ServiceControlPolicies:
+        - !Ref RestrictUnusedRegionsSCP
+
+  ProductionAccount:
+    Type: OC::ORG::Account
+    Properties:
+      RootEmail: production-aws@dsacosta.io
+      AccountName: Production Account
+      Tags:
+        budget-alarm-threshold: '25'
+        account-owner-email: david@dsacosta.io
+
+  DevelopmentAccount:
+    Type: OC::ORG::Account
+    Properties:
+      RootEmail: development-aws@dsacosta.io
+      AccountName: Development Account
+      Tags:
+        budget-alarm-threshold: '25'
+        account-owner-email: david@dsacosta.io
+
+  DevelopmentOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: development
+      Accounts:
+        - !Ref DevelopmentAccount
+
+  ProductionOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: production
+      Accounts:
+        - !Ref ProductionAccount
+
+  RestrictUnusedRegionsSCP:
+    Type: OC::ORG::ServiceControlPolicy
+    Properties:
+      PolicyName: RestrictUnusedRegions
+      Description: Restrict Unused regions
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyUnsupportedRegions
+            Effect: Deny
+            NotAction:
+              - 'cloudfront:*'
+              - 'iam:*'
+              - 'route53:*'
+              - 'support:*'
+            Resource: '*'
+            Condition:
+              StringNotEquals:
+                'aws:RequestedRegion':
+                  - eu-west-1
+                  - us-east-1
+                  - eu-central-1
