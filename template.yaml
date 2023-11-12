@@ -19,7 +19,6 @@ Resources:
 
 BucketPolicy:
   Type: AWS::S3::BucketPolicy
-  Properties: 
     PolicyDocument:
       Id: MyPolicy
       Version: 2012-10-17
