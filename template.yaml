@@ -14,7 +14,6 @@ Globals:
 Resources:
   MyWebsite: 
     Type: AWS::S3::Bucket
-      Properties:
       BucketName: dsa-website1
 
 BucketPolicy:
