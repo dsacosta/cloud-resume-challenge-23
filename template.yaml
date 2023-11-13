@@ -9,7 +9,6 @@ Description: >
 Globals:
   Function:
     Timeout: 3
-    MemorySize: 128
 
 Resources:
 
@@ -25,7 +24,7 @@ Resources:
     Type: "AWS::S3::BucketPolicy"
     Properties:
       PolicyDocument:
-        Id: WebPolicy
+        Id: MyPolicy
         Version: 2012-10-17
         Statement:
           - Sid: PublicReadForGetBucketObjects
@@ -34,7 +33,7 @@ Resources:
             Action: "s3:GetObject"
             Resource: !Join
               - ""
-              - - "arn:aws:s3:::"
+              - - "arn:aws:s3:::dsa-website1"
                 - !Ref MyWebsite
                 - /*
       Bucket: !Ref MyWebsite

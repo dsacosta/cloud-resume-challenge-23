@@ -8,7 +8,6 @@ Description: 'cloud-resume-challenge-23
 Globals:
   Function:
     Timeout: 3
-    MemorySize: 128
 Resources:
   MyWebsite:
     Type: AWS::S3::Bucket
@@ -21,12 +20,13 @@ Resources:
     Type: AWS::S3::BucketPolicy
     Properties:
       PolicyDocument:
-        Id: WebPolicy
+        Id: MyPolicy
         Version: '2012-10-17'
         Statement:
         - Sid: PublicReadForGetBucketObjects
           Effect: Allow
-          Principal: '*'
+          Principal:
+            AWS: '*'
           Action: s3:GetObject
           Resource:
             Fn::Join:
